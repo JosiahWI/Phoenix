@@ -45,7 +45,21 @@ namespace q2
 	class Chunk
 	{
 	public:
+		/// @brief Generates new chunk
 		Chunk();
+		/**
+		 * @brief Load a Chunk from a save string
+		 * 
+		 * @param save The save string that defines what is in the chunk
+		 */
+		Chunk(const std::string& save);
+
+		/**
+		 * @brief Save the chunk to a save string
+		 * 
+		 * @return std::string the savestring for the chunk
+		 */
+		std::string save();
 
 		static constexpr std::size_t NUM_BLOCKS = 16 * 16 * 16;
 

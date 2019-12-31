@@ -50,6 +50,19 @@ Chunk::Chunk()
 	}
 }
 
+Chunk::Chunk(const std::string& save){
+
+}
+
+std::string Chunk::save(){
+	std::string savestring;
+	for (ChunkBlock block : m_blocks){
+		savestring += "{";
+		savestring += block.type->id;
+		savestring += "}";
+	}
+}
+
 static void addBlockTopFace(Vec3 pos, Mesh* mesh, BlockType* type)
 {
 	const RectAABB uvs = BlockRegistry::get()->getAtlas()->getSpriteFromID(type->textures.top);
