@@ -28,12 +28,56 @@
 
 #pragma once
 
-#include <Quartz2/Math.hpp>
-#include <Quartz2/ChunkRenderer.hpp>
-#include <Quartz2/Game.hpp>
-#include <Quartz2/Camera.hpp>
-#include <Quartz2/Mesh.hpp>
-#include <Quartz2/Chunk.hpp>
-#include <Quartz2/VoxelWorld.hpp>
-#include <Quartz2/BlocksTextureAtlas.hpp>
-#include <Quartz2/InputMap.hpp>
+#include <Quartz2/Singleton.hpp>
+
+#include <SDL.h>
+
+#include <map>
+#include <string>
+#include <functional>
+#include <vector>
+
+namespace q2
+{
+    enum EKeyState
+	{
+		KEY_PRESSED,
+		KEY_HELD,
+		KEY_RELEASED
+	};
+
+    struct Input{
+        std::vector<SDL_Scancode> keys;
+        std::function<void()> action;
+    };
+    
+    class InputMap : public Singleton<InputMap>{
+        std::map<std::string, Input> m_inputs;
+
+        public:
+
+        InputMap();
+
+        /**
+         * @brief Registers a new input
+         * 
+         * @param id The unique ID for the input in the format core:moveForward
+         * @param defaultKey The default key this is set to, will overwrite other keys already loaded
+         * @param action The function that is executed when this input is triggered
+         */
+        void registerInput(std::string id, SDL_Scancode defaultKey, std::function<void()> action);
+        /**
+         * @brief Adds a key to an input, if key is associated to another input, will delete it.
+         * 
+         * @param id The unique ID for the input in the format core:moveForward
+         * @param key The key this is set to, will overwrite if key is set elsewhere
+         */
+        void setInput(std::string id, SDL_Scancode key);
+
+        /**
+         * @brief Check for input, should be ran every frame
+         * 
+         */
+        void tick();
+    };
+}

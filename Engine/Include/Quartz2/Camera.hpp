@@ -115,5 +115,13 @@ namespace q2
 
 		/// @brief Setting that stores the sensitivity base value
 		Setting* m_settingSensitivity;
+
+		/// @brief Setting that stores the sensitivity base value
+		float m_moveSpeed;
+		// TODO: This will be stored in the player object
+
+		float m_dt;
+
+		Vec3 m_right;
 	};
 } // namespace q2

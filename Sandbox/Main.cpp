@@ -118,6 +118,7 @@ protected:
 	{
 		static bool wireframe = false;
 
+		InputMap::get()->tick();
 		m_camera->tick(dt, getSDLWindow());
 
 		OpenGL32::clearScreen(0.2196f, 0.2196f, 0.2196f, 1.f);

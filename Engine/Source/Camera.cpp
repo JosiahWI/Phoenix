@@ -26,13 +26,11 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
+#include <Quartz2/InputMap.hpp>
 #include <Quartz2/Camera.hpp>
 #include <Quartz2/MathUtils.hpp>
 
 #include <cmath>
-
-const float MOVE_SPEED  = 0.01f;
-const float SENSITIVITY = 0.00005f;
 
 using namespace q2;
 
@@ -42,6 +40,28 @@ Camera::Camera()
 	    Settings::get()->add("Sensitivity", "camera:sensitivity", 5);
 	m_settingSensitivity->setMax(100);
 	m_settingSensitivity->setMin(1);
+
+	m_moveSpeed = 0.01f;
+
+	InputMap* inputs = InputMap::get();
+	inputs->registerInput("camera:moveForward", SDL_SCANCODE_W, 
+						  [this]() { m_position += m_direction * m_dt * m_moveSpeed; });
+	inputs->registerInput("camera:moveBackward", SDL_SCANCODE_S, 
+						  [this]() { m_position -= m_direction * m_dt * m_moveSpeed; });
+	inputs->registerInput("camera:moveLeft", SDL_SCANCODE_A, 
+						  [this]() { m_position -= m_right * m_dt * m_moveSpeed; });
+	inputs->registerInput("camera:moveRight", SDL_SCANCODE_D, 
+						  [this]() { m_position += m_right * m_dt * m_moveSpeed; });
+	inputs->registerInput("camera:moveUp", SDL_SCANCODE_SPACE, 
+						  [this]() { m_position.y += m_dt * m_moveSpeed; });
+	inputs->registerInput("camera:moveDown", SDL_SCANCODE_LSHIFT, 
+						  [this]() { m_position.y -= m_dt * m_moveSpeed; });
+	inputs->registerInput("camera:increaseSensitivity", SDL_SCANCODE_O, 
+						  [this]() { m_settingSensitivity->set(m_settingSensitivity->value() +
+		                                       1); });
+	inputs->registerInput("camera:decreaseSensitivity", SDL_SCANCODE_P, 
+						  [this]() { m_settingSensitivity->set(m_settingSensitivity->value() -
+		                                       1); });
 }
 
 Vec3 Camera::getPosition() const { return m_position; }
@@ -83,12 +103,14 @@ void Camera::tick(float dt, SDL_Window* window)
 	m_direction.y = std::sin(m_rotation.y);
 	m_direction.z = std::cos(m_rotation.y) * std::cos(m_rotation.x);
 
-	const Vec3 right = {std::sin(m_rotation.x - q2::PIDIV2), 0.f,
+	m_right = {std::sin(m_rotation.x - q2::PIDIV2), 0.f,
 	                    std::cos(m_rotation.x - q2::PIDIV2)};
 
-	m_up = Vec3::cross(right, m_direction);
+	m_up = Vec3::cross(m_right, m_direction);
 
-	const float moveSpeed = MOVE_SPEED;
+	m_dt = dt;
+
+	/*const float moveSpeed = m_moveSpeed;
 
 	const Uint8* keys = SDL_GetKeyboardState(NULL);
 
@@ -103,11 +125,11 @@ void Camera::tick(float dt, SDL_Window* window)
 
 	if (keys[SDL_SCANCODE_A])
 	{
-		m_position -= right * dt * moveSpeed;
+		m_position -= m_right * dt * moveSpeed;
 	}
 	else if (keys[SDL_SCANCODE_D])
 	{
-		m_position += right * dt * moveSpeed;
+		m_position += m_right * dt * moveSpeed;
 	}
 
 	if (keys[SDL_SCANCODE_SPACE])
@@ -128,5 +150,5 @@ void Camera::tick(float dt, SDL_Window* window)
 	{
 		m_settingSensitivity->set(m_settingSensitivity->value() -
 		                                       1);
-	}
+	}*/
 }

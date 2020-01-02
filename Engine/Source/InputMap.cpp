@@ -26,14 +26,34 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#pragma once
-
-#include <Quartz2/Math.hpp>
-#include <Quartz2/ChunkRenderer.hpp>
-#include <Quartz2/Game.hpp>
-#include <Quartz2/Camera.hpp>
-#include <Quartz2/Mesh.hpp>
-#include <Quartz2/Chunk.hpp>
-#include <Quartz2/VoxelWorld.hpp>
-#include <Quartz2/BlocksTextureAtlas.hpp>
 #include <Quartz2/InputMap.hpp>
+
+using namespace q2;
+
+InputMap::InputMap(){}
+
+void InputMap::registerInput(std::string id, SDL_Scancode defaultKey, std::function<void()> action){
+    m_inputs[id].action = action;
+    setInput(id, defaultKey);
+}
+
+void InputMap::setInput(std::string id, SDL_Scancode key){
+    for(auto & [id, input]: m_inputs){
+        std::vector<SDL_Scancode>::iterator it = std::find(input.keys.begin(), input.keys.end(), key);
+        if(it != input.keys.end()){
+            input.keys.erase(it);
+        }
+    }
+    m_inputs[id].keys.push_back(key);
+}
+
+void InputMap::tick(){
+	const Uint8* keys = SDL_GetKeyboardState(NULL);
+    for(auto & [id, input]: m_inputs){
+        for(SDL_Scancode key: input.keys){
+            if(keys[key]){
+                input.action();
+            }
+        }
+    }
+}
