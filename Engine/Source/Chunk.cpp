@@ -51,15 +51,21 @@ Chunk::Chunk()
 }
 
 Chunk::Chunk(const std::string& save){
-
+	std::string savestring = save;
+	std::size_t last = 0;
+	for (std::size_t i = 0; i < NUM_BLOCKS; i++){
+		std::size_t pos = savestring.find(";");
+		m_blocks[i].type = BlockRegistry::get()->getBlockFromID(savestring.substr(last,pos).c_str());
+		i++;
+		last = pos;
+	}
 }
 
 std::string Chunk::save(){
 	std::string savestring;
 	for (ChunkBlock block : m_blocks){
-		savestring += "{";
 		savestring += block.type->id;
-		savestring += "}";
+		savestring += ";";
 	}
 }
 
