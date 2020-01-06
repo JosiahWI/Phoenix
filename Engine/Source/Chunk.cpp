@@ -49,16 +49,21 @@ Chunk::Chunk()
 			m_blocks[i].type = grassBlock;
 	}
 }
+#include <iostream>
 
 Chunk::Chunk(const std::string& save){
 	std::string savestring = save;
 	std::size_t last = 0;
+	std::size_t pos;
 	for (std::size_t i = 0; i < NUM_BLOCKS; i++){
-		std::size_t pos = savestring.find(";");
-		m_blocks[i].type = BlockRegistry::get()->getBlockFromID(savestring.substr(last,pos).c_str());
-		i++;
-		last = pos;
+		std::cout << "parse block" << i;
+		pos = savestring.find(";", last);
+		std::cout << savestring.substr(last,pos-last);
+		//m_blocks[i].type = BlockRegistry::get()->getBlockFromID(savestring.substr(last,pos-last).c_str());
+		last = pos + 1;
+		std::cout << " end" << "\n";
 	}
+	std::cout << "got there";
 }
 
 std::string Chunk::save(){
@@ -67,6 +72,7 @@ std::string Chunk::save(){
 		savestring += block.type->id;
 		savestring += ";";
 	}
+	return savestring;
 }
 
 static void addBlockTopFace(Vec3 pos, Mesh* mesh, BlockType* type)

@@ -3,6 +3,9 @@
 #include <imgui.h>
 
 #include <memory>
+#include <fstream>
+#include <iostream>
+#include <string>
 
 using namespace q2;
 
@@ -73,7 +76,19 @@ protected:
 		
 		m_chunkRenderer->setTexture(atlas->getPatchedTextureData(), atlas->getPatchedTextureWidth(), atlas->getPatchedTextureHeight());
 
-		Chunk a;
+		//Chunk a;
+		std::cout << "Why you do this to me?!?!?!";
+		std::ifstream file;
+		std::cout << "Open a file";
+		file.open("save");
+		//file << a.save();
+		std::string chunk;
+		std::cout << "Get a line";
+		while (std::getline(file,chunk)){};
+		std::cout << "Create a chunk";
+		Chunk a = Chunk(chunk);
+		file.close();
+		std::cout << "Mesh";
 		m_chunkRenderer->addMesh(a.generateMesh());
 	}
 	
