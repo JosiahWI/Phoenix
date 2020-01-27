@@ -4,6 +4,7 @@ set(voxelHeaders
 	${currentDir}/BlockRegistry.hpp
 	${currentDir}/TextureRegistry.hpp
 	${currentDir}/Chunk.hpp
+	${currentDir}/Map.hpp
 
 	PARENT_SCOPE
 )

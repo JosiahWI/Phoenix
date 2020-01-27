@@ -45,9 +45,15 @@ namespace phx
             ~Map() = default;
 
             Chunk& checkoutChunk(math::vec3 pos);
-            void returnChunk();
+            void returnChunk(math::vec3 pos);
         private:
-            std::vector<int> m_chunkLog;
+            std::map<math::vec3 pos, Chunk chunk> m_chunks;
+            std::map<math::vec3 pos, int out> m_chunkLog;
+            std::string m_save;
+            std::string m_mapName;
+
+            void loadChunk(math::vec3 pos);
+            void unloadChunk(math::vec3 pos);
         };
     };
 };
