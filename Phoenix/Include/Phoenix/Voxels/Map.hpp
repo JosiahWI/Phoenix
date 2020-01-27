@@ -38,22 +38,56 @@ namespace phx
 {
 	namespace voxels
 	{
-        class Map
-        {
-        public:
-            Map(std::string save, std::string mapName);
-            ~Map() = default;
+		/**
+		 * @brief A map of chunks
+		 *
+		 * The map handles knowing which chunks need to be in memory based on if
+		 * a client is using the chunk or not. The map also loads and saves
+		 * chunks to file.
+		 *
+		 * Clients can checkout chunks based on their position, if the chunk is
+		 * nolonger needed by the client, it should return the chunk to save
+		 * memory. A server side client representation will handle this in the
+		 * future.
+		 */
+		class Map
+		{
+		public:
+			Map(std::string save, std::string mapName);
+			~Map() = default;
 
-            Chunk& checkoutChunk(math::vec3 pos);
-            void returnChunk(math::vec3 pos);
-        private:
-            std::map<math::vec3 pos, Chunk chunk> m_chunks;
-            std::map<math::vec3 pos, int out> m_chunkLog;
-            std::string m_save;
-            std::string m_mapName;
+			/**
+			 * @brief Checks out a chunk from the map
+			 *
+			 * @param pos Position of the chunk to checkout
+			 * @return Chunk& The address of the checked out chunk
+			 */
+			Chunk& checkoutChunk(math::vec3 pos);
+			/**
+			 * @brief Returns a chunk that was previously checked out
+			 *
+			 * @param pos Position of the chunk to return
+			 */
+			void returnChunk(math::vec3 pos);
 
-            void loadChunk(math::vec3 pos);
-            void unloadChunk(math::vec3 pos);
-        };
-    };
-};
+		private:
+			std::map<math::vec3 pos, Chunk chunk> m_chunks;
+			std::map<math::vec3 pos, int out>     m_chunkLog;
+			std::string                           m_save;
+			std::string                           m_mapName;
+
+			/**
+			 * @brief Loads a chunk from save or creates a new one if needed
+			 *
+			 * @param pos Position of chunk to load
+			 */
+			void loadChunk(math::vec3 pos);
+			/**
+			 * @brief Saves a chunk to file then clears memory
+			 *
+			 * @param pos Position of chunk to unload
+			 */
+			void unloadChunk(math::vec3 pos);
+		};
+	}; // namespace voxels
+};     // namespace phx
